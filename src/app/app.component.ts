@@ -11,93 +11,118 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  // inputValue = document.getElementById('userinput');
-  // calculate = document.querySelectorAll('.operations').forEach(function (item) {
-  //   console.log(item);
-  //   item.addEventListener("click", function (e) { });
+  calValue: number = 0;
+  funcT: any = 'noFunction';
+  calNumber: string = 'noValue';
+  firstNumber: number = 0;
+  secondNumber: number = 0;
 
-  // });
-  // numbers = document.querySelectorAll(".numbers").forEach(function (item) {
-  //   item.addEventListener("click", function (e) {
-  //     inputValue.innterText = e.target.inntertext.trim();
-  //   });
-  // });
-  @ViewChild('userInput') userInput!: ElementRef<HTMLParagraphElement>;
-  currentNumber: string = '0';
-  firstNumber: number | null = null;
-  operator: string | null = null;
-  decimalUsed: boolean = false;
-
-  getExpression(): string {
-    return this.firstNumber === null ? this.currentNumber : `${this.firstNumber} ${this.operator} ${this.currentNumber}`;
-  }
-
-  appendNumber(number: string) {
-    if (this.currentNumber === '0' || this.operator !== null) {
-      this.currentNumber = number;
-    } else {
-      this.currentNumber += number;
+  onClickValue(val: string, type: any) {
+    if (type == 'number') {
+      this.onNumberClick(val);
     }
-    this.userInput.nativeElement.innerText = this.currentNumber;
-  }
-
-  appendOperator(op: string) {
-    this.calculateResult();
-    this.operator = op;
-    this.decimalUsed = false;
-  }
-
-  calculateResult() {
-    if (this.operator === null || this.currentNumber === '') return;
-    const secondNumber = parseFloat(this.currentNumber);
-    let result: number;
-    switch (this.operator) {
-      case '+':
-        result = this.firstNumber! + secondNumber;
-        break;
-      case '-':
-        result = this.firstNumber! - secondNumber;
-        break;
-      case '*':
-        result = this.firstNumber! * secondNumber;
-        break;
-      case '/':
-        if (secondNumber === 0) {
-          alert('Error: Division by zero!');
-          return;
-        }
-        result = this.firstNumber! / secondNumber;
-        break;
-      default:
-        return;
+    else if (type == 'function') {
+      this.onFunctionClick(val);
     }
-    this.currentNumber = result.toString();
-    this.firstNumber = result;
-    this.operator = null;
-  }
-
-  allClear() {
-    this.currentNumber = '0';
-    this.firstNumber = null;
-    this.operator = null;
-    this.decimalUsed = false;
-    this.userInput.nativeElement.innerText = this.currentNumber;
   }
 
   handleDelete() {
-    if (this.currentNumber.length > 1) {
-      this.currentNumber = this.currentNumber.slice(0, -1);
+    // need to update this
+    if (this.calNumber.length > 1) {
+      this.calNumber = this.calNumber.slice(0, -1);
     } else {
-      this.currentNumber = '0';
+      this.calNumber = '0';
     }
-    this.userInput.nativeElement.innerText = this.currentNumber;
   }
 
-  addDecimal() {
-    if (!this.decimalUsed) {
-      this.currentNumber += '.';
-      this.decimalUsed = true;
-      this.userInput.nativeElement.innerText = this.currentNumber;
+  allClear() {
+    this.calValue = 0;
+    this.funcT = 'noFunction';
+    this.calNumber = 'noValue';
+    this.firstNumber = 0;
+    this.secondNumber = 0;
+  }
+
+  onNumberClick(val: string) {
+    if (this.calNumber !== 'noValue') {
+      this.calNumber = this.calNumber + val;
+    }
+    else {
+      this.calNumber = val;
+    }
+    this.calValue = parseFloat(this.calNumber);
+  }
+
+
+  onFunctionClick(val: string) {
+    if (this.funcT == 'noFunction') {
+      this.firstNumber = this.calValue;
+      this.calValue = this.firstNumber;
+      this.calNumber = 'noValue';
+      this.funcT = val;
+    }
+    else if (this.funcT !== 'noFunction') {
+      this.secondNumber = this.calValue;
+      this.valueCalculate(val);
+    }
+
+  }
+
+  valueCalculate(val: string) {
+    if (this.funcT == '+') {
+      const Total = this.firstNumber + this.secondNumber;
+      this.totalAssignValues(Total, val);
+      if (val == '=') {
+        this.onEqualPress();
+      }
+    }
+    if (this.funcT == '-') {
+      const Total = this.firstNumber - this.secondNumber;
+      this.totalAssignValues(Total, val);
+      if (val == '=') {
+        this.onEqualPress();
+      }
+    }
+    if (this.funcT == '*') {
+      const Total = this.firstNumber * this.secondNumber;
+      this.totalAssignValues(Total, val);
+      if (val == '=') {
+        this.onEqualPress();
+      }
+    }
+    if (this.funcT == '/') {
+      if (this.secondNumber === 0) {
+        alert('Error: Division by zero!');
+        this.allClear();
+        return;
+      }
+      const Total = this.firstNumber / this.secondNumber;
+      this.totalAssignValues(Total, val);
+      if (val == '=') {
+        this.onEqualPress();
+      }
+    }
+    if (this.funcT == '%') {
+      const Total = this.firstNumber / 100;
+      this.totalAssignValues(Total, val);
+      this.onEqualPress();
+
     }
   }
+
+  onEqualPress() {
+    this.firstNumber = 0;
+    this.secondNumber = 0;
+    this.calNumber = 'noValue';
+    this.funcT = 'noFunction';
+  }
+
+  totalAssignValues(Total: number, val: string) {
+    this.calValue = Total;
+    this.firstNumber = Total;
+    this.secondNumber = this.firstNumber;
+    this.calNumber = 'noValue';
+    this.funcT = val;
+  }
+
 }

@@ -1,34 +1,33 @@
 <body>
-
   <div class="container">
     <div class="calc-input">
-      <p name="user-input" id="userinput">0</p>
+      <p name="user-input" id="userinput">{{ calValue | number}}</p>
     </div>
+
     <div class="calc-keys">
       <button class="operations-others operations" type="button" (click)="allClear()">AC</button>
-      <button class="operations-others operations" type="button" (click)="handleDelete()">Del</button>
-      <button class="operations-others operations" type="button">%</button>
-      <button class="operations" type="button" (click)="appendOperator('/')">/</button>
+      <button class="operations-others operations" type="button" (click)="handleDelete()">DEL</button>
+      <button class="operations-others operations" type="button" (click)="onClickValue('%', 'function')">%</button>
+      <button class="operations" type="button" (click)="onClickValue('/', 'function')">/</button>
 
-      <button class="numbers" type="button" (click)="appendNumber('7')">7</button>
-      <button class="numbers" type="button" (click)="appendNumber('8')">8</button>
-      <button class="numbers" type="button" (click)="appendNumber('9')">9</button>
-      <button class="operations" type="button" (click)="appendOperator('*')">*</button>
+      <button class="numbers" type="button" (click)="onClickValue('7', 'number')">7</button>
+      <button class="numbers" type="button" (click)="onClickValue('8', 'number')">8</button>
+      <button class="numbers" type="button" (click)="onClickValue('9', 'number')">9</button>
+      <button class="operations" type="button" (click)="onClickValue('*', 'function')">*</button>
 
-      <button class="numbers" type="button" (click)="appendNumber('4')">4</button>
-      <button class="numbers" type="button" (click)="appendNumber('5')">5</button>
-      <button class="numbers" type="button" (click)="appendNumber('6')">6</button>
-      <button class="operations" type="button" (click)="appendOperator('-')">-</button>
+      <button class="numbers" type="button" (click)="onClickValue('4', 'number')">4</button>
+      <button class="numbers" type="button" (click)="onClickValue('5', 'number')">5</button>
+      <button class="numbers" type="button" (click)="onClickValue('6', 'number')">6</button>
+      <button class="operations" type="button" (click)="onClickValue('-', 'function')">-</button>
 
-      <button class="numbers" type="button" (click)="appendNumber('1')">1</button>
-      <button class="numbers" type="button" (click)="appendNumber('2')">2</button>
-      <button class="numbers" type="button" (click)="appendNumber('3')">3</button>
-      <button class="operations" type="button" (click)="appendOperator('+')">+</button>
+      <button class="numbers" type="button" (click)="onClickValue('1', 'number')">1</button>
+      <button class="numbers" type="button" (click)="onClickValue('2', 'number')">2</button>
+      <button class="numbers" type="button" (click)="onClickValue('3', 'number')">3</button>
+      <button class="operations" type="button" (click)="onClickValue('+', 'function')">+</button>
 
-      <button class="key-zero" type="button" (click)="appendNumber('0')">0</button>
-      <button class="numbers" type="button" (click)="addDecimal()">.</button>
-      <button class="operations" type="button" (click)="calculateResult()">=</button>
+      <button class="key-zero" type="button" (click)="onClickValue('0', 'number')">0</button>
+      <button class="numbers" type="button" (click)="onClickValue('.', 'number')">.</button>
+      <button class="operations" type="button" (click)="onClickValue('=', 'function')">=</button>
     </div>
-
   </div>
 </body>
