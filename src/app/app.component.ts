@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -11,47 +11,93 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'calculator-angular';
-  currentNumber = "";
-  previousNumber = "";
-  operator = "";
+  // inputValue = document.getElementById('userinput');
+  // calculate = document.querySelectorAll('.operations').forEach(function (item) {
+  //   console.log(item);
+  //   item.addEventListener("click", function (e) { });
 
-  appendNumber(number: string) {
-    this.currentNumber += number;
+  // });
+  // numbers = document.querySelectorAll(".numbers").forEach(function (item) {
+  //   item.addEventListener("click", function (e) {
+  //     inputValue.innterText = e.target.inntertext.trim();
+  //   });
+  // });
+  @ViewChild('userInput') userInput!: ElementRef<HTMLParagraphElement>;
+  currentNumber: string = '0';
+  firstNumber: number | null = null;
+  operator: string | null = null;
+  decimalUsed: boolean = false;
+
+  getExpression(): string {
+    return this.firstNumber === null ? this.currentNumber : `${this.firstNumber} ${this.operator} ${this.currentNumber}`;
   }
 
-  clearScreen() {
-    this.currentNumber = "";
-    this.previousNumber = "";
-    this.operator = "";
+  appendNumber(number: string) {
+    if (this.currentNumber === '0' || this.operator !== null) {
+      this.currentNumber = number;
+    } else {
+      this.currentNumber += number;
+    }
+    this.userInput.nativeElement.innerText = this.currentNumber;
   }
 
   appendOperator(op: string) {
-    if (this.currentNumber === "") return;
-    this.previousNumber = this.currentNumber;
-    this.currentNumber = "";
+    this.calculateResult();
     this.operator = op;
+    this.decimalUsed = false;
   }
 
-  calculate() {
-    if (this.currentNumber === "" || this.operator === "") return;
-    let result = 0;
+  calculateResult() {
+    if (this.operator === null || this.currentNumber === '') return;
+    const secondNumber = parseFloat(this.currentNumber);
+    let result: number;
     switch (this.operator) {
-      case "+":
-        result = parseFloat(this.previousNumber) + parseFloat(this.currentNumber);
+      case '+':
+        result = this.firstNumber! + secondNumber;
         break;
-      case "-":
-        result = parseFloat(this.previousNumber) - parseFloat(this.currentNumber);
+      case '-':
+        result = this.firstNumber! - secondNumber;
         break;
-      case "*":
-        result = parseFloat(this.previousNumber) * parseFloat(this.currentNumber);
+      case '*':
+        result = this.firstNumber! * secondNumber;
         break;
-      case "/":
-        result = parseFloat(this.previousNumber) / parseFloat(this.currentNumber);
+      case '/':
+        if (secondNumber === 0) {
+          alert('Error: Division by zero!');
+          return;
+        }
+        result = this.firstNumber! / secondNumber;
         break;
+      default:
+        return;
     }
     this.currentNumber = result.toString();
-    this.previousNumber = "";
-    this.operator = "";
+    this.firstNumber = result;
+    this.operator = null;
+  }
+
+  allClear() {
+    this.currentNumber = '0';
+    this.firstNumber = null;
+    this.operator = null;
+    this.decimalUsed = false;
+    this.userInput.nativeElement.innerText = this.currentNumber;
+  }
+
+  handleDelete() {
+    if (this.currentNumber.length > 1) {
+      this.currentNumber = this.currentNumber.slice(0, -1);
+    } else {
+      this.currentNumber = '0';
+    }
+    this.userInput.nativeElement.innerText = this.currentNumber;
+  }
+
+  addDecimal() {
+    if (!this.decimalUsed) {
+      this.currentNumber += '.';
+      this.decimalUsed = true;
+      this.userInput.nativeElement.innerText = this.currentNumber;
+    }
   }
 }
