@@ -1,5 +1,7 @@
 # CalculatorAngular
 
+![image](https://github.com/ditharaju/calculator-angular/assets/27858226/b65ff50f-843a-4e18-8d79-ced8e0a01d78)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.8.
 
 ## Development server
